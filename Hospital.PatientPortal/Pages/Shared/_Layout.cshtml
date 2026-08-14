@@ -21,7 +21,8 @@
 
         @if (User.Identity?.IsAuthenticated == true)
         {
-            <nav>
+            <nav class="main-nav">
+
                 <a asp-page="/Index">
                     Dashboard
                 </a>
@@ -30,33 +31,45 @@
                     Planning
                 </a>
 
-                <a asp-page="/Behandelingen/Overzicht">
-                    Behandelingen
-                </a>
+                <details class="nav-dropdown">
+                    <summary>
+                        Mijn dossier
+                    </summary>
 
-                <a asp-page="/Consultaties/Historiek">
-                    Historiek
-                </a>
+                    <div class="nav-dropdown-menu">
 
-                <a asp-page="/Evaluaties/Overzicht">
-                    Evaluaties
-                </a>
+                        <a asp-page="/Behandelingen/Overzicht">
+                            Behandelingen
+                        </a>
+
+                        <a asp-page="/Consultaties/Historiek">
+                            Historiek
+                        </a>
+
+                        <a asp-page="/Evaluaties/Overzicht">
+                            Evaluaties
+                        </a>
+
+                        <a asp-page="/Klachten/Overzicht">
+                            Klachten
+                        </a>
+
+                    </div>
+                </details>
 
                 <a asp-page="/Documenten/Index">
                     Documenten
-                </a>
-
-                <a asp-page="/Klachten/Overzicht">
-                    Klachten
                 </a>
 
                 <a asp-page="/Profiel/Overzicht">
                     Profiel
                 </a>
 
-                <a asp-page="/Account/Uitloggen">
+                <a class="logout-link"
+                       asp-page="/Account/Uitloggen">
                     Uitloggen
                 </a>
+
             </nav>
         }
 
