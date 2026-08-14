@@ -1,10 +1,91 @@
 @page
 @model Hospital.PatientPortal.Pages.Planning.OverzichtModel
-@{ ViewData["Title"] = "Mijn planning"; }
-<h1>Mijn planning</h1><p class="muted">Uw geplande consultaties staan hieronder.</p>
-<div class="timeline">
-@foreach (var item in Model.Consultations)
-{
-    <article class="appointment"><div class="datebox"><strong>@item.StartTime.ToString("dd")</strong><span>@item.StartTime.ToString("MMM")</span></div><div><h2>@item.Reason</h2><p>@item.StartTime.ToString("HH:mm") · @item.DoctorName</p><p class="muted">Ruimte @item.Room</p></div><span class="pill">@item.Status</span></article>
+
+@{
+    ViewData["Title"] = "Mijn planning";
 }
-</div>
+
+<h1>Mijn planning</h1>
+
+<p class="muted">
+    Bekijk hieronder uw geplande consultaties en operaties.
+</p>
+
+@if (!Model.Consultations.Any() && !Model.Operations.Any())
+{
+    <div class="empty">
+        Er zijn momenteel geen afspraken of operaties gepland.
+    </div>
+}
+else
+{
+    <div class="timeline">
+
+        @foreach (var item in Model.Consultations)
+        {
+            <article class="appointment">
+
+                <div class="datebox">
+                    <strong>@item.StartTime.ToString("dd")</strong>
+                    <span>@item.StartTime.ToString("MMM")</span>
+                </div>
+
+                <div>
+                    <p class="eyebrow">CONSULTATIE</p>
+
+                    <h2>@item.Reason</h2>
+
+                    <p>
+                        @item.StartTime.ToString("HH:mm")
+                        · @item.DoctorName
+                    </p>
+
+                    <p class="muted">
+                        Ruimte @item.Room
+                    </p>
+                </div>
+
+                <span class="pill">
+                    @item.Status
+                </span>
+
+            </article>
+        }
+
+        @foreach (var operation in Model.Operations)
+        {
+            <article class="appointment">
+
+                <div class="datebox">
+                    <strong>@operation.StartTime.ToString("dd")</strong>
+                    <span>@operation.StartTime.ToString("MMM")</span>
+                </div>
+
+                <div>
+                    <p class="eyebrow">OPERATIE</p>
+
+                    <h2>@operation.Name</h2>
+
+                    <p>
+                        @operation.StartTime.ToString("HH:mm")
+                        · @operation.SurgeonName
+                    </p>
+
+                    <p class="muted">
+                        Operatiekamer @operation.OperatingRoom
+                    </p>
+
+                    <p class="muted">
+                        @operation.Description
+                    </p>
+                </div>
+
+                <span class="pill">
+                    @operation.Status
+                </span>
+
+            </article>
+        }
+
+    </div>
+}

@@ -12,6 +12,7 @@ public class HospitalDataService
 	private readonly List<Evaluation> _evaluations = new();
 	private readonly List<PatientDocument> _documents = new();
 	private readonly List<AuditLog> _auditLogs = new();
+	private readonly List<Operation> _operations = new();
 
 	private int _patientId = 1;
 	private int _complaintId = 1;
@@ -70,6 +71,20 @@ public class HospitalDataService
 			Room = "B2.14",
 			Reason = "Controle knieklachten",
 			Status = AppointmentStatus.Planned
+		});
+
+		_operations.Add(new Operation
+		{
+			Id = 1,
+			PatientId = 1,
+			TreatmentId = 1,
+			Name = "Kijkoperatie rechterknie",
+			Description = "Diagnostische kijkoperatie om de knie verder te onderzoeken.",
+			StartTime = DateTime.Today.AddDays(12).AddHours(9),
+			SurgeonName = "Dr. Jansen",
+			OperatingRoom = "OK-3",
+			Status = AppointmentStatus.Planned,
+			MedicalReport = ""
 		});
 
 		_evaluations.Add(new Evaluation
@@ -210,6 +225,30 @@ public class HospitalDataService
 				c.PatientId == patientId &&
 				c.Status == AppointmentStatus.Completed)
 			.OrderByDescending(c => c.StartTime)
+			.ToList();
+	}
+
+	// -------------------------
+	// OPERATIES
+	// -------------------------
+
+	public IReadOnlyList<Operation> GetOperations(int patientId)
+	{
+		return _operations
+			.Where(o => o.PatientId == patientId)
+			.OrderBy(o => o.StartTime)
+			.ToList();
+	}
+
+	public IReadOnlyList<Operation> GetOperationsForTreatment(
+		int treatmentId,
+		int patientId)
+	{
+		return _operations
+			.Where(o =>
+				o.TreatmentId == treatmentId &&
+				o.PatientId == patientId)
+			.OrderBy(o => o.StartTime)
 			.ToList();
 	}
 
