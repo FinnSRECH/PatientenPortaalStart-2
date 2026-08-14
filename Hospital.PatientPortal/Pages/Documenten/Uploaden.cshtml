@@ -1,0 +1,81 @@
+﻿@page
+@model Hospital.PatientPortal.Pages.Documenten.UploadenModel
+
+@{
+    ViewData["Title"] = "Document uploaden";
+}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h1>Document uploaden</h1>
+
+        <p class="text-muted">
+            Voeg een document toe aan uw patiëntendossier.
+        </p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form method="post" enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="UploadFile" class="form-label">
+                        Bestand
+                    </label>
+
+                    <input asp-for="UploadFile"
+                           type="file"
+                           class="form-control"
+                           accept=".pdf,.jpg,.jpeg,.png" />
+
+                    <span asp-validation-for="UploadFile"
+                          class="text-danger">
+                    </span>
+
+                    <div class="form-text">
+                        Toegestane bestandstypen: PDF, JPG, JPEG en PNG.
+                        Maximale bestandsgrootte: 5 MB.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label">
+                        Omschrijving
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Beschrijf kort wat voor document u uploadt."></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Uploaden
+                    </button>
+
+                    <a asp-page="/Documenten/Index"
+                           class="btn btn-outline-secondary">
+                        Annuleren
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

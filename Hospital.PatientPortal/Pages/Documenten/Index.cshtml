@@ -1,0 +1,142 @@
+﻿@page
+@model Hospital.PatientPortal.Pages.Documenten.IndexModel
+
+@{
+    ViewData["Title"] = "Mijn documenten";
+}
+
+<div class="container py-4">
+
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="alert alert-success mb-4">
+            @successMessage
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">Mijn documenten</h1>
+
+            <p class="text-muted mb-0">
+                Bekijk documenten die bij uw patiëntendossier horen.
+            </p>
+        </div>
+
+        <a asp-page="/Documenten/Uploaden"
+               class="btn btn-primary">
+            Document uploaden
+        </a>
+    </div>
+
+    <div class="alert alert-info mb-4">
+        <strong>Privacy:</strong>
+        documenten die door een zorgverlener zijn toegevoegd,
+        zijn uitsluitend beschikbaar om te bekijken.
+        U kunt deze medische informatie niet wijzigen.
+    </div>
+
+    @if (!Model.Documents.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+
+                <h4>Geen documenten</h4>
+
+                <p class="text-muted mb-3">
+                    Er zijn momenteel geen documenten aan uw dossier gekoppeld.
+                </p>
+
+                <a asp-page="/Documenten/Uploaden"
+                       class="btn btn-primary">
+                    Eerste document uploaden
+                </a>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+
+            @foreach (var document in Model.Documents)
+            {
+                <div class="col-12">
+
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+
+                            <div class="row align-items-center">
+
+                                <div class="col-md-7">
+
+                                    <h5 class="card-title mb-1">
+                                        @document.FileName
+                                    </h5>
+
+                                    <p class="text-muted mb-2">
+                                        @document.Description
+                                    </p>
+
+                                    <small class="text-muted">
+                                        Toegevoegd op
+                                        @document.UploadedAt.ToString("dd-MM-yyyy HH:mm")
+                                        door @document.UploadedBy
+                                    </small>
+
+                                </div>
+
+                                <div class="col-md-3 mt-3 mt-md-0">
+
+                                    @if (document.UploadedByHealthcareProvider)
+                                    {
+                                        <span class="badge bg-primary">
+                                            Zorgdocument
+                                        </span>
+
+                                        <span class="badge bg-secondary">
+                                            Alleen lezen
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">
+                                            Eigen upload
+                                        </span>
+                                    }
+
+                                </div>
+
+                                <div class="col-md-2 text-md-end mt-3 mt-md-0">
+
+                                    @if (!string.IsNullOrWhiteSpace(document.FilePath))
+                                    {
+                                        <a href="@document.FilePath"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="btn btn-outline-primary">
+                                            Bekijken
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-outline-secondary"
+                                                disabled>
+                                            Demo-document
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
