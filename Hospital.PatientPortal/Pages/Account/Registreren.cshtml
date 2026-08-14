@@ -1,0 +1,19 @@
+@page
+@model Hospital.PatientPortal.Pages.Account.RegistrerenModel
+@{
+    ViewData["Title"] = "Registreren";
+}
+<div class="form-shell">
+    <h1>Account aanmaken</h1>
+    <p class="muted">Vul uw gegevens in om toegang te krijgen tot het patiëntenportaal.</p>
+    <form method="post" class="form-grid">
+        <div><label asp-for="Input.FirstName">Voornaam</label><input asp-for="Input.FirstName" /><span asp-validation-for="Input.FirstName"></span></div>
+        <div><label asp-for="Input.LastName">Achternaam</label><input asp-for="Input.LastName" /><span asp-validation-for="Input.LastName"></span></div>
+        <div><label asp-for="Input.Email">E-mailadres</label><input asp-for="Input.Email" /><span asp-validation-for="Input.Email"></span></div>
+        <div><label asp-for="Input.DateOfBirth">Geboortedatum</label><input asp-for="Input.DateOfBirth" type="date" /><span asp-validation-for="Input.DateOfBirth"></span></div>
+        <div class="wide"><label asp-for="Input.Address">Adres</label><input asp-for="Input.Address" /><span asp-validation-for="Input.Address"></span></div>
+        <div><label asp-for="Input.PhoneNumber">Telefoonnummer</label><input asp-for="Input.PhoneNumber" /><span asp-validation-for="Input.PhoneNumber"></span></div>
+        <div><label asp-for="Input.Password">Wachtwoord</label><input asp-for="Input.Password" /><span asp-validation-for="Input.Password"></span></div>
+        <div class="wide"><button class="button" type="submit">Account aanmaken</button></div>
+    </form>
+</div>

@@ -1,0 +1,6 @@
+@page
+@model Hospital.PatientPortal.Pages.Behandelingen.OverzichtModel
+@{ ViewData["Title"] = "Mijn behandelingen"; }
+<div class="page-heading"><div><p class="eyebrow">MIJN DOSSIER</p><h1>Behandelingen</h1><p class="muted">Bekijk uw actieve en eerdere behandelingen.</p></div></div>
+@if (!Model.Treatments.Any()) { <div class="empty">Er zijn nog geen behandelingen geregistreerd.</div> }
+else { <div class="cards">@foreach (var treatment in Model.Treatments) { <section class="card treatment-card"><span class="status">@treatment.Status</span><h2>@treatment.Name</h2><p>@treatment.Description</p><p class="small">Gestart op @treatment.StartDate.ToString("dd-MM-yyyy") · Behandelend arts: @treatment.SurgeonName</p><a class="button" asp-page="/Behandelingen/Detail" asp-route-id="@treatment.Id">Behandeling bekijken</a></section> }</div> }

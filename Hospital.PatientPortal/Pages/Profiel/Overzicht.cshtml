@@ -1,0 +1,6 @@
+@page
+@model Hospital.PatientPortal.Pages.Profiel.OverzichtModel
+@{ ViewData["Title"] = "Mijn profiel"; }
+<div class="form-shell narrow"><h1>Mijn profiel</h1><p class="muted">U kunt uw contactgegevens aanpassen. Uw medische gegevens worden hier niet gewijzigd.</p>
+@if (TempData["Success"] is not null) { <div class="success">@TempData["Success"]</div> }
+<form method="post"><label>E-mailadres</label><input value="@Model.Email" disabled /><label asp-for="Input.FirstName">Voornaam</label><input asp-for="Input.FirstName" /><span asp-validation-for="Input.FirstName"></span><label asp-for="Input.LastName">Achternaam</label><input asp-for="Input.LastName" /><span asp-validation-for="Input.LastName"></span><label asp-for="Input.PhoneNumber">Telefoonnummer</label><input asp-for="Input.PhoneNumber" /><span asp-validation-for="Input.PhoneNumber"></span><label asp-for="Input.Address">Adres</label><input asp-for="Input.Address" /><span asp-validation-for="Input.Address"></span><button class="button" type="submit">Wijzigingen opslaan</button></form></div>

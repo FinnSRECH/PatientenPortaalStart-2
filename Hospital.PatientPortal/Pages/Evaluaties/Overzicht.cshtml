@@ -1,0 +1,5 @@
+@page
+@model Hospital.PatientPortal.Pages.Evaluaties.OverzichtModel
+@{ ViewData["Title"] = "Evaluaties"; }
+<div class="page-heading"><div><p class="eyebrow">MIJN DOSSIER</p><h1>Evaluaties</h1><p class="muted">Lees evaluaties die door uw zorgverleners zijn toegevoegd.</p></div></div>
+@if (!Model.Evaluations.Any()) { <div class="empty">Er zijn nog geen evaluaties beschikbaar.</div> } else { <div class="cards">@foreach (var evaluation in Model.Evaluations) { <article class="card evaluation-card"><p class="card-label">@evaluation.CreatedAt.ToString("dd-MM-yyyy")</p><h2>@evaluation.Title</h2><p>@evaluation.Content</p><p class="small">Toegevoegd door @evaluation.CareProviderName</p><span class="readonly-badge">Alleen lezen</span></article> }</div> }

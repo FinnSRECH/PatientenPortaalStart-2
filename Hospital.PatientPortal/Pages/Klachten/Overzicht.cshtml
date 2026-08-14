@@ -1,0 +1,12 @@
+@page
+@model Hospital.PatientPortal.Pages.Klachten.OverzichtModel
+@{ ViewData["Title"] = "Mijn klachten"; }
+<div class="page-heading"><div><h1>Mijn klachten</h1><p class="muted">Klachten die u via het portaal heeft doorgegeven.</p></div><a class="button" asp-page="/Klachten/Toevoegen">Nieuwe klacht</a></div>
+@if (TempData["Success"] is not null) { <div class="success">@TempData["Success"]</div> }
+@if (!Model.Complaints.Any()) { <div class="empty">U heeft nog geen klachten geregistreerd.</div> }
+else
+{
+<table><thead><tr><th>Datum</th><th>Onderwerp</th><th>Beschrijving</th><th>Status</th></tr></thead><tbody>
+@foreach (var item in Model.Complaints) { <tr><td>@item.CreatedAt.ToString("dd-MM-yyyy HH:mm")</td><td>@item.Title</td><td>@item.Description</td><td><span class="pill">@(item.IsProcessed ? "Verwerkt" : "Nieuw")</span></td></tr> }
+</tbody></table>
+}

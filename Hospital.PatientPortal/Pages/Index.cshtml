@@ -1,0 +1,42 @@
+@page
+@model Hospital.PatientPortal.Pages.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<section class="hero">
+    <div>
+        <span class="eyebrow">PATIËNTENPORTAAL</span>
+        <h1>Welkom, @Model.Patient.FirstName</h1>
+        <p>Bekijk uw zorginformatie en regel eenvoudig zaken rondom uw behandeling.</p>
+    </div>
+</section>
+
+<div class="cards three">
+    <article class="card">
+        <span class="card-label">Volgende afspraak</span>
+        @if (Model.NextConsultation is not null)
+        {
+            <h2>@Model.NextConsultation.StartTime.ToString("dd MMM yyyy")</h2>
+            <p>@Model.NextConsultation.StartTime.ToString("HH:mm") · @Model.NextConsultation.DoctorName</p>
+            <p class="muted">@Model.NextConsultation.Room</p>
+        }
+        else { <p>Geen afspraak gepland.</p> }
+    </article>
+    <article class="card">
+        <span class="card-label">Actieve behandeling</span>
+        <h2>@(Model.ActiveTreatment?.Name ?? "Geen actieve behandeling")</h2>
+        <p class="status">@(Model.ActiveTreatment?.Status.ToString() ?? "-")</p>
+    </article>
+    <article class="card">
+        <span class="card-label">Snel regelen</span>
+        <h2>Nieuwe klacht?</h2>
+        <a class="button" asp-page="/Klachten/Toevoegen">Klacht registreren</a>
+    </article>
+</div>
+
+<h2 class="section-title">Mijn dossier</h2>
+<div class="actions">
+    <a class="action" asp-page="/Klachten/Toevoegen"><strong>Klacht melden</strong><span>Geef nieuwe klachten door</span></a>
+    <a class="action" asp-page="/Planning/Overzicht"><strong>Mijn planning</strong><span>Bekijk consultaties en afspraken</span></a>
+    <a class="action" asp-page="/Profiel/Overzicht"><strong>Mijn profiel</strong><span>Controleer uw contactgegevens</span></a>
+</div>

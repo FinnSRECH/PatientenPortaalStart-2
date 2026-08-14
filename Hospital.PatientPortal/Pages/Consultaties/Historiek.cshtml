@@ -1,0 +1,5 @@
+@page
+@model Hospital.PatientPortal.Pages.Consultaties.HistoriekModel
+@{ ViewData["Title"] = "Consultatiehistoriek"; }
+<div class="page-heading"><div><p class="eyebrow">MEDISCHE HISTORIEK</p><h1>Consultatiehistoriek</h1><p class="muted">Afgeronde consultaties en de beschikbare medische verslagen.</p></div></div>
+@if (!Model.Consultations.Any()) { <div class="empty">Er zijn nog geen afgeronde consultaties.</div> } else { <div class="timeline">@foreach (var item in Model.Consultations) { <article class="appointment history-item"><div class="datebox"><strong>@item.StartTime.Day</strong><span>@item.StartTime.ToString("MMM")</span></div><div><h2>@item.Reason</h2><p>@item.StartTime.ToString("dd-MM-yyyy HH:mm") · @item.DoctorName</p><p class="small">@item.Room</p>@if (!string.IsNullOrWhiteSpace(item.MedicalReport)) { <div class="report"><strong>Medisch verslag</strong><p>@item.MedicalReport</p></div> }</div><span class="pill">Afgerond</span></article> }</div> }

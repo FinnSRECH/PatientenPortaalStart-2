@@ -1,0 +1,10 @@
+@page
+@model Hospital.PatientPortal.Pages.Planning.OverzichtModel
+@{ ViewData["Title"] = "Mijn planning"; }
+<h1>Mijn planning</h1><p class="muted">Uw geplande consultaties staan hieronder.</p>
+<div class="timeline">
+@foreach (var item in Model.Consultations)
+{
+    <article class="appointment"><div class="datebox"><strong>@item.StartTime.ToString("dd")</strong><span>@item.StartTime.ToString("MMM")</span></div><div><h2>@item.Reason</h2><p>@item.StartTime.ToString("HH:mm") · @item.DoctorName</p><p class="muted">Ruimte @item.Room</p></div><span class="pill">@item.Status</span></article>
+}
+</div>

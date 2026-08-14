@@ -1,0 +1,17 @@
+@page
+@model Hospital.PatientPortal.Pages.Klachten.ToevoegenModel
+@{ ViewData["Title"] = "Klacht registreren"; }
+<div class="form-shell narrow">
+    <a asp-page="/Klachten/Overzicht">← Terug naar klachten</a>
+    <h1>Nieuwe klacht registreren</h1>
+    <p class="muted">Beschrijf zo duidelijk mogelijk waar u last van heeft. Bij spoed neemt u rechtstreeks contact op met een zorgverlener.</p>
+    <form method="post">
+        <label asp-for="Complaint.Title">Onderwerp</label>
+        <input asp-for="Complaint.Title" placeholder="Bijvoorbeeld: pijn in rechterknie" />
+        <span asp-validation-for="Complaint.Title"></span>
+        <label asp-for="Complaint.Description">Beschrijving</label>
+        <textarea asp-for="Complaint.Description" rows="7" placeholder="Sinds wanneer heeft u klachten en wat merkt u precies?"></textarea>
+        <span asp-validation-for="Complaint.Description"></span>
+        <button class="button" type="submit">Klacht versturen</button>
+    </form>
+</div>

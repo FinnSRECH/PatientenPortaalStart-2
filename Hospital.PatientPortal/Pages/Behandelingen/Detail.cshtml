@@ -1,0 +1,8 @@
+@page "{id:int}"
+@model Hospital.PatientPortal.Pages.Behandelingen.DetailModel
+@{ ViewData["Title"] = "Behandeling"; }
+<a asp-page="/Behandelingen/Overzicht">← Terug naar behandelingen</a>
+<div class="page-heading"><div><p class="eyebrow">BEHANDELING</p><h1>@Model.Treatment.Name</h1><span class="status">@Model.Treatment.Status</span></div></div>
+<section class="form-shell readonly-panel"><h2>Behandelgegevens</h2><div class="detail-grid"><div><span>Startdatum</span><strong>@Model.Treatment.StartDate.ToString("dd-MM-yyyy")</strong></div><div><span>Behandelend arts</span><strong>@Model.Treatment.SurgeonName</strong></div><div><span>Verpleegkundige</span><strong>@Model.Treatment.NurseName</strong></div><div><span>Status</span><strong>@Model.Treatment.Status</strong></div></div><h2>Omschrijving</h2><p>@Model.Treatment.Description</p><p class="small">Medische informatie is in het patiëntenportaal uitsluitend leesbaar.</p></section>
+<h2 class="section-title">Consultaties binnen deze behandeling</h2>
+@if (!Model.Consultations.Any()) { <div class="empty">Er zijn nog geen consultaties gekoppeld.</div> } else { <div class="timeline">@foreach (var item in Model.Consultations) { <article class="appointment"><div class="datebox"><strong>@item.StartTime.Day</strong><span>@item.StartTime.ToString("MMM")</span></div><div><h2>@item.Reason</h2><p>@item.StartTime.ToString("dd-MM-yyyy HH:mm") · @item.DoctorName</p><p class="small">Ruimte @item.Room</p>@if (!string.IsNullOrWhiteSpace(item.MedicalReport)) { <p><strong>Verslag:</strong> @item.MedicalReport</p> }</div><span class="pill">@item.Status</span></article> }</div> }
