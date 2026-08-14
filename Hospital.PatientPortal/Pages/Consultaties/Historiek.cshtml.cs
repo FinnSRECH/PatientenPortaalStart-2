@@ -1,10 +1,56 @@
 using System.Security.Claims;
 using Hospital.Domain.Models;
 using Hospital.PatientPortal.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+
 namespace Hospital.PatientPortal.Pages.Consultaties;
-public class HistoriekModel(HospitalDataService data) : PageModel
+
+[Authorize]
+public class HistoriekModel : PageModel
 {
-    public IReadOnlyList<Consultation> Consultations { get; private set; } = Array.Empty<Consultation>();
-    public void OnGet() => Consultations = data.GetConsultationHistory(int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+	private readonly HospitalDataService _data;
+
+	public HistoriekModel(HospitalDataService data)
+	{
+		_data = data;
+	}
+
+	public IReadOnlyList<Consultation> Consultations { get; private set; }
+		= Array.Empty<Consultation>();
+
+	public IActionResult OnGet()
+	{
+		var patientIdValue =
+			User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		if (!int.TryParse(patientIdValue, out var patientId))
+		{
+			return RedirectToPage("/Account/Login");
+		}
+
+		var patient = _data.GetPatient(patientId);
+
+		if (patient is null)
+		{
+			return RedirectToPage("/Account/Login");
+		}
+
+		Consultations =
+			_data.GetConsultationHistory(patientId);
+
+		var patientName =
+			$"{patient.FirstName} {patient.LastName}";
+
+		_data.StartAuditLog(
+			userId: patient.Id,
+			userName: patientName,
+			patientId: patient.Id,
+			patientName: patientName,
+			action: "Raadplegen",
+			resource: "Consultatiehistoriek");
+
+		return Page();
+	}
 }

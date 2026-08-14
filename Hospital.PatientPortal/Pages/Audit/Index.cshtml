@@ -1,0 +1,66 @@
+﻿@page
+@model Hospital.PatientPortal.Pages.Audit.IndexModel
+
+@{
+    ViewData["Title"] = "Auditlog test";
+}
+
+<div class="page-header">
+    <h1>Auditlog test</h1>
+    <p>
+        Tijdelijk ontwikkeloverzicht om te controleren
+        of dossierinzage correct wordt geregistreerd.
+    </p>
+</div>
+
+@if (!Model.AuditLogs.Any())
+{
+    <div class="card">
+        <h2>Nog geen loggegevens</h2>
+        <p>
+            Open eerst bijvoorbeeld de pagina Documenten
+            en kom daarna terug naar deze pagina.
+        </p>
+    </div>
+}
+else
+{
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Gebruiker</th>
+                    <th>Patiënt</th>
+                    <th>Actie</th>
+                    <th>Onderdeel</th>
+                    <th>Geopend op</th>
+                    <th>Duur</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var log in Model.AuditLogs)
+                {
+                    <tr>
+                        <td>@log.UserName</td>
+                        <td>@log.PatientName</td>
+                        <td>@log.Action</td>
+                        <td>@log.Resource</td>
+                        <td>@log.OpenedAt.ToString("dd-MM-yyyy HH:mm:ss")</td>
+
+                        <td>
+                            @if (log.Duration.HasValue)
+                            {
+                                @log.Duration.Value.ToString(@"hh\:mm\:ss")
+                            }
+                            else
+                            {
+                                <span>Nog actief</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

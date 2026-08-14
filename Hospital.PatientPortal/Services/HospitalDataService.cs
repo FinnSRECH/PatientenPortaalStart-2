@@ -11,10 +11,12 @@ public class HospitalDataService
 	private readonly List<Treatment> _treatments = new();
 	private readonly List<Evaluation> _evaluations = new();
 	private readonly List<PatientDocument> _documents = new();
+	private readonly List<AuditLog> _auditLogs = new();
 
 	private int _patientId = 1;
 	private int _complaintId = 1;
 	private int _documentId = 1;
+	private int _auditLogId = 1;
 
 	public HospitalDataService(PasswordService passwords)
 	{
@@ -108,6 +110,10 @@ public class HospitalDataService
 		});
 	}
 
+	// -------------------------
+	// PATIENTEN
+	// -------------------------
+
 	public Patient? GetPatient(int id)
 	{
 		return _patients.FirstOrDefault(p => p.Id == id);
@@ -116,8 +122,37 @@ public class HospitalDataService
 	public Patient? FindPatientByEmail(string email)
 	{
 		return _patients.FirstOrDefault(
-			p => p.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+			p => p.Email.Equals(
+				email,
+				StringComparison.OrdinalIgnoreCase));
 	}
+
+	public Patient AddPatient(Patient patient)
+	{
+		patient.Id = _patientId++;
+		_patients.Add(patient);
+
+		return patient;
+	}
+
+	public void UpdatePatient(Patient patient)
+	{
+		var existing = GetPatient(patient.Id);
+
+		if (existing is null)
+		{
+			return;
+		}
+
+		existing.FirstName = patient.FirstName;
+		existing.LastName = patient.LastName;
+		existing.PhoneNumber = patient.PhoneNumber;
+		existing.Address = patient.Address;
+	}
+
+	// -------------------------
+	// BEHANDELINGEN
+	// -------------------------
 
 	public Treatment? GetActiveTreatment(int patientId)
 	{
@@ -126,7 +161,9 @@ public class HospitalDataService
 				 t.Status == TreatmentStatus.Active);
 	}
 
-	public Treatment? GetTreatment(int treatmentId, int patientId)
+	public Treatment? GetTreatment(
+		int treatmentId,
+		int patientId)
 	{
 		return _treatments.FirstOrDefault(
 			t => t.Id == treatmentId &&
@@ -141,6 +178,10 @@ public class HospitalDataService
 			.ToList();
 	}
 
+	// -------------------------
+	// CONSULTATIES
+	// -------------------------
+
 	public IReadOnlyList<Consultation> GetConsultations(int patientId)
 	{
 		return _consultations
@@ -154,20 +195,27 @@ public class HospitalDataService
 		int patientId)
 	{
 		return _consultations
-			.Where(c => c.TreatmentId == treatmentId &&
-						c.PatientId == patientId)
+			.Where(c =>
+				c.TreatmentId == treatmentId &&
+				c.PatientId == patientId)
 			.OrderByDescending(c => c.StartTime)
 			.ToList();
 	}
 
-	public IReadOnlyList<Consultation> GetConsultationHistory(int patientId)
+	public IReadOnlyList<Consultation> GetConsultationHistory(
+		int patientId)
 	{
 		return _consultations
-			.Where(c => c.PatientId == patientId &&
-						c.Status == AppointmentStatus.Completed)
+			.Where(c =>
+				c.PatientId == patientId &&
+				c.Status == AppointmentStatus.Completed)
 			.OrderByDescending(c => c.StartTime)
 			.ToList();
 	}
+
+	// -------------------------
+	// EVALUATIES
+	// -------------------------
 
 	public IReadOnlyList<Evaluation> GetEvaluations(int patientId)
 	{
@@ -177,6 +225,10 @@ public class HospitalDataService
 			.ToList();
 	}
 
+	// -------------------------
+	// KLACHTEN
+	// -------------------------
+
 	public IReadOnlyList<Complaint> GetComplaints(int patientId)
 	{
 		return _complaints
@@ -184,6 +236,18 @@ public class HospitalDataService
 			.OrderByDescending(c => c.CreatedAt)
 			.ToList();
 	}
+
+	public void AddComplaint(Complaint complaint)
+	{
+		complaint.Id = _complaintId++;
+		complaint.CreatedAt = DateTime.Now;
+
+		_complaints.Add(complaint);
+	}
+
+	// -------------------------
+	// DOCUMENTEN
+	// -------------------------
 
 	public IReadOnlyList<PatientDocument> GetDocuments(int patientId)
 	{
@@ -193,38 +257,63 @@ public class HospitalDataService
 			.ToList();
 	}
 
-	public Patient AddPatient(Patient patient)
-	{
-		patient.Id = _patientId++;
-		_patients.Add(patient);
-		return patient;
-	}
-
-	public void AddComplaint(Complaint complaint)
-	{
-		complaint.Id = _complaintId++;
-		complaint.CreatedAt = DateTime.Now;
-		_complaints.Add(complaint);
-	}
-
 	public void AddDocument(PatientDocument document)
 	{
 		document.Id = _documentId++;
 		document.UploadedAt = DateTime.Now;
+
 		_documents.Add(document);
 	}
-public void UpdatePatient(Patient patient)
-	{
-		var existing = GetPatient(patient.Id);
 
-		if (existing is null)
+	// -------------------------
+	// AUDITLOG
+	// -------------------------
+
+	public int StartAuditLog(
+		int userId,
+		string userName,
+		int patientId,
+		string patientName,
+		string action,
+		string resource)
+	{
+		var auditLog = new AuditLog
+		{
+			Id = _auditLogId++,
+			UserId = userId,
+			UserName = userName,
+			PatientId = patientId,
+			PatientName = patientName,
+			Action = action,
+			Resource = resource,
+			OpenedAt = DateTime.Now
+		};
+
+		_auditLogs.Add(auditLog);
+
+		return auditLog.Id;
+	}
+
+	public void CloseAuditLog(int auditLogId)
+	{
+		var auditLog = _auditLogs
+			.FirstOrDefault(a => a.Id == auditLogId);
+
+		if (auditLog is null)
 		{
 			return;
 		}
 
-		existing.FirstName = patient.FirstName;
-		existing.LastName = patient.LastName;
-		existing.PhoneNumber = patient.PhoneNumber;
-		existing.Address = patient.Address;
+		if (auditLog.ClosedAt is null)
+		{
+			auditLog.ClosedAt = DateTime.Now;
+		}
+	}
+
+	public IReadOnlyList<AuditLog> GetAuditLogs()
+	{
+		return _auditLogs
+			.OrderByDescending(a => a.OpenedAt)
+			.ToList();
 	}
 }

@@ -3,29 +3,74 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - MijnZorg</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
 </head>
+
 <body>
-<header class="topbar">
-    <a class="brand" asp-page="/Index">MijnZorg</a>
-    @if (User.Identity?.IsAuthenticated == true)
-    {
-        <nav>
-            <a asp-page="/Index">Dashboard</a>
-            <a asp-page="/Planning/Overzicht">Planning</a>
-            <a asp-page="/Behandelingen/Overzicht">Behandelingen</a>
-            <a asp-page="/Consultaties/Historiek">Historiek</a>
-            <a asp-page="/Evaluaties/Overzicht">Evaluaties</a>
-            <a asp-page="/Klachten/Overzicht">Klachten</a>
-            <a asp-page="/Profiel/Overzicht">Profiel</a>
-            <a asp-page="/Account/Uitloggen">Uitloggen</a>
-        </nav>
-    }
-</header>
-<main class="container">
-    @RenderBody()
-</main>
-<footer>MijnZorg patiëntenportaal · Schoolproject</footer>
+
+    <header class="topbar">
+
+        <a class="brand" asp-page="/Index">
+            MijnZorg
+        </a>
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <nav>
+                <a asp-page="/Index">
+                    Dashboard
+                </a>
+
+                <a asp-page="/Planning/Overzicht">
+                    Planning
+                </a>
+
+                <a asp-page="/Behandelingen/Overzicht">
+                    Behandelingen
+                </a>
+
+                <a asp-page="/Consultaties/Historiek">
+                    Historiek
+                </a>
+
+                <a asp-page="/Evaluaties/Overzicht">
+                    Evaluaties
+                </a>
+
+                <a asp-page="/Documenten/Index">
+                    Documenten
+                </a>
+
+                <a asp-page="/Klachten/Overzicht">
+                    Klachten
+                </a>
+
+                <a asp-page="/Profiel/Overzicht">
+                    Profiel
+                </a>
+
+                <a asp-page="/Account/Uitloggen">
+                    Uitloggen
+                </a>
+            </nav>
+        }
+
+    </header>
+
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    <footer>
+        MijnZorg patiëntenportaal · Schoolproject
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
