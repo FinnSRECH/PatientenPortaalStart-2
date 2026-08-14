@@ -303,7 +303,6 @@ public class HospitalDataService
 
 		_documents.Add(document);
 	}
-
 	// -------------------------
 	// AUDITLOG
 	// -------------------------
@@ -316,6 +315,9 @@ public class HospitalDataService
 		string action,
 		string resource)
 	{
+		// Sluit eerst een eerdere actieve raadpleging van deze gebruiker af.
+		CloseActiveAuditLogs(userId);
+
 		var auditLog = new AuditLog
 		{
 			Id = _auditLogId++,
@@ -327,6 +329,13 @@ public class HospitalDataService
 			Resource = resource,
 			OpenedAt = DateTime.Now
 		};
+
+		// Toevoegen en wijzigen zijn losse gebeurtenissen.
+		// Alleen een raadpleging blijft actief totdat de gebruiker verder navigeert.
+		if (!action.Equals("Raadplegen", StringComparison.OrdinalIgnoreCase))
+		{
+			auditLog.ClosedAt = DateTime.Now;
+		}
 
 		_auditLogs.Add(auditLog);
 
@@ -344,6 +353,20 @@ public class HospitalDataService
 		}
 
 		if (auditLog.ClosedAt is null)
+		{
+			auditLog.ClosedAt = DateTime.Now;
+		}
+	}
+
+	public void CloseActiveAuditLogs(int userId)
+	{
+		var activeLogs = _auditLogs
+			.Where(a =>
+				a.UserId == userId &&
+				a.ClosedAt == null)
+			.ToList();
+
+		foreach (var auditLog in activeLogs)
 		{
 			auditLog.ClosedAt = DateTime.Now;
 		}

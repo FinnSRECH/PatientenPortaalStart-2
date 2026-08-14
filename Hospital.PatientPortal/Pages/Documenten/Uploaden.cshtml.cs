@@ -115,9 +115,8 @@ public class UploadenModel : PageModel
 
 		Directory.CreateDirectory(uploadDirectory);
 
-		// Gebruik niet rechtstreeks de originele bestandsnaam op de server.
-		// Een willekeurige naam voorkomt conflicten en ongewenste paden.
-		var safeFileName = $"{Guid.NewGuid()}{extension}";
+		var safeFileName =
+			$"{Guid.NewGuid()}{extension}";
 
 		var physicalFilePath =
 			Path.Combine(uploadDirectory, safeFileName);
@@ -140,6 +139,17 @@ public class UploadenModel : PageModel
 		};
 
 		_data.AddDocument(document);
+
+		var patientName =
+			$"{patient.FirstName} {patient.LastName}";
+
+		_data.StartAuditLog(
+			userId: patient.Id,
+			userName: patientName,
+			patientId: patient.Id,
+			patientName: patientName,
+			action: "Toevoegen",
+			resource: $"Document: {document.FileName}");
 
 		TempData["SuccessMessage"] =
 			"Uw document is succesvol toegevoegd aan uw dossier.";
