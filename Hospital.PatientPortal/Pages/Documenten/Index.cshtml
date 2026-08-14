@@ -111,9 +111,9 @@
 
                                     @if (!string.IsNullOrWhiteSpace(document.FilePath))
                                     {
-                                        <a href="@document.FilePath"
-                                               target="_blank"
-                                               rel="noopener noreferrer"
+                                        <a asp-page="/Documenten/Index"
+                                               asp-page-handler="Download"
+                                               asp-route-id="@document.Id"
                                                class="btn btn-outline-primary">
                                             Bekijken
                                         </a>

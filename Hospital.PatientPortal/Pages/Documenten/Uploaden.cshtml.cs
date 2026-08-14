@@ -54,7 +54,7 @@ public class UploadenModel : PageModel
 
 		if (!int.TryParse(patientIdValue, out var patientId))
 		{
-			return RedirectToPage("/Account/Login");
+			return RedirectToPage("/Account/Inloggen");
 		}
 
 		if (UploadFile is null)
@@ -105,12 +105,12 @@ public class UploadenModel : PageModel
 
 		if (patient is null)
 		{
-			return RedirectToPage("/Account/Login");
+			return RedirectToPage("/Account/Inloggen");
 		}
 
 		var uploadDirectory = Path.Combine(
-			_environment.WebRootPath,
-			"uploads",
+			_environment.ContentRootPath,
+			"SecureUploads",
 			patientId.ToString());
 
 		Directory.CreateDirectory(uploadDirectory);
@@ -133,7 +133,10 @@ public class UploadenModel : PageModel
 			FileName = Path.GetFileName(UploadFile.FileName),
 			Description = Description.Trim(),
 			ContentType = UploadFile.ContentType,
-			FilePath = $"/uploads/{patientId}/{safeFileName}",
+			FilePath = Path.Combine(
+				"SecureUploads",
+				patientId.ToString(),
+				safeFileName),
 			UploadedBy = $"{patient.FirstName} {patient.LastName}",
 			UploadedByHealthcareProvider = false
 		};

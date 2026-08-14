@@ -11,10 +11,14 @@ namespace Hospital.PatientPortal.Pages.Documenten;
 public class IndexModel : PageModel
 {
 	private readonly HospitalDataService _data;
+	private readonly IWebHostEnvironment _environment;
 
-	public IndexModel(HospitalDataService data)
+	public IndexModel(
+		HospitalDataService data,
+		IWebHostEnvironment environment)
 	{
 		_data = data;
+		_environment = environment;
 	}
 
 	public IReadOnlyList<PatientDocument> Documents { get; private set; }
@@ -27,14 +31,14 @@ public class IndexModel : PageModel
 
 		if (!int.TryParse(patientIdValue, out var patientId))
 		{
-			return RedirectToPage("/Account/Login");
+			return RedirectToPage("/Account/Inloggen");
 		}
 
 		var patient = _data.GetPatient(patientId);
 
 		if (patient is null)
 		{
-			return RedirectToPage("/Account/Login");
+			return RedirectToPage("/Account/Inloggen");
 		}
 
 		Documents = _data.GetDocuments(patientId);
@@ -51,5 +55,62 @@ public class IndexModel : PageModel
 			resource: "Documenten");
 
 		return Page();
+	}
+
+	public IActionResult OnGetDownload(int id)
+	{
+		var patientIdValue =
+			User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+		if (!int.TryParse(patientIdValue, out var patientId))
+		{
+			return Unauthorized();
+		}
+
+		var patient = _data.GetPatient(patientId);
+
+		if (patient is null)
+		{
+			return Unauthorized();
+		}
+
+		var document = _data
+			.GetDocuments(patientId)
+			.FirstOrDefault(d => d.Id == id);
+
+		if (document is null)
+		{
+			return NotFound();
+		}
+
+		if (string.IsNullOrWhiteSpace(document.FilePath))
+		{
+			return NotFound();
+		}
+
+		var physicalPath = Path.Combine(
+			_environment.ContentRootPath,
+			document.FilePath);
+
+		if (!System.IO.File.Exists(physicalPath))
+		{
+			return NotFound();
+		}
+
+		var patientName =
+			$"{patient.FirstName} {patient.LastName}";
+
+		_data.StartAuditLog(
+			userId: patient.Id,
+			userName: patientName,
+			patientId: patient.Id,
+			patientName: patientName,
+			action: "Raadplegen",
+			resource: $"Document: {document.FileName}");
+
+		return PhysicalFile(
+			physicalPath,
+			document.ContentType,
+			document.FileName);
 	}
 }
